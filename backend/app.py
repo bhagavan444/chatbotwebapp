@@ -12,7 +12,6 @@ from threading import Lock
 app = Flask(__name__)
 
 # -------------------- CORS Setup --------------------
-# Allow only your Netlify frontend
 CORS(app, resources={r"/*": {"origins": "https://bgbot.netlify.app"}}, supports_credentials=True)
 
 # -------------------- Thread-safe storage --------------------
@@ -216,6 +215,11 @@ def chat():
     except Exception as e:
         print(f"❌ Error: {e}")
         return jsonify({"reply": "⚠️ Error processing your message."}), 500
+
+# -------------------- /chat alias for frontend --------------------
+@app.route("/chat", methods=["POST"])
+def chat_alias():
+    return chat()
 
 # -------------------- Run App --------------------
 if __name__ == "__main__":
