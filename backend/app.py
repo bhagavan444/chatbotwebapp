@@ -10,17 +10,20 @@ from pptx import Presentation
 from threading import Lock
 
 app = Flask(__name__)
-CORS(app)
 
-# Thread-safe in-memory storage
+# -------------------- CORS --------------------
+# Allow only your deployed frontend domain
+CORS(app, resources={r"/api/*": {"origins": "https://bgbot.netlify.app"}})
+
+# -------------------- Thread-safe in-memory storage --------------------
 chat_sessions = {}
 chat_lock = Lock()
 
-# Gemini API configuration
+# -------------------- Gemini API configuration --------------------
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyA3uC2IDU_Rb8VoJ-k2lGILQROc7j0SgNU")
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
 
-# Downloads folder
+# -------------------- Downloads folder --------------------
 os.makedirs('downloads', exist_ok=True)
 
 # -------------------- Chat Endpoints --------------------
@@ -43,7 +46,6 @@ def get_chat(chat_id):
 def create_chat():
     data = request.get_json()
     user_input = data.get("message", "")
-    reply = data.get("reply", "")
     chat_id = data.get("chat_id", str(uuid.uuid4()))
     title = data.get("title")
     if not title:
@@ -80,7 +82,6 @@ def delete_all_chats():
         chat_sessions.clear()
     return jsonify({"message": "All chats deleted successfully"})
 
-# -------------------- Per-message deletion --------------------
 @app.route("/api/chats/<chat_id>/message/<msg_id>", methods=["DELETE"])
 def delete_message(chat_id, msg_id):
     with chat_lock:
@@ -90,7 +91,6 @@ def delete_message(chat_id, msg_id):
             return jsonify({"message": "Message deleted successfully"})
     return jsonify({"error": "Chat or message not found"}), 404
 
-# -------------------- Chat search/filter --------------------
 @app.route("/api/chats/search", methods=["GET"])
 def search_chats():
     query = request.args.get("q", "").lower()
@@ -102,7 +102,6 @@ def search_chats():
         ]
     return jsonify({"results": results})
 
-# -------------------- File Download --------------------
 @app.route("/download/<filename>", methods=["GET"])
 def download(filename):
     safe_path = os.path.join("downloads", filename)
@@ -110,7 +109,6 @@ def download(filename):
         return send_from_directory('downloads', filename, as_attachment=True)
     return jsonify({"error": "File not found"}), 404
 
-# -------------------- Chat + File Upload & ATS --------------------
 @app.route("/api/chat", methods=["POST"])
 def chat():
     try:
@@ -127,7 +125,6 @@ def chat():
         if not user_input and not file:
             return jsonify({"reply": "⚠️ No input or file received."}), 400
 
-        # Process file
         filename, ext, file_text = None, None, ""
         if file:
             filename = f"{uuid.uuid4().hex}_{file.filename}"
@@ -152,11 +149,9 @@ def chat():
                 return jsonify({"reply": "⚠️ Unsupported file type."}), 400
             user_input += f"\n\nFile Content ({filename}): {file_text}"
 
-        # Auto-detect resume
         resume_keywords = ["experience", "education", "skills", "projects", "certifications", "objective", "summary"]
         is_resume = any(word.lower() in user_input.lower() for word in resume_keywords)
 
-        # Gemini prompt
         system_prompt = (
             "You are an expert ATS analyzer.\nAnalyze this resume content and provide an ATS score (0-100) with detailed improvement suggestions in plain text."
             if is_resume else
@@ -171,14 +166,12 @@ def chat():
         result = response.json()
         reply = result.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
 
-        # Store chat messages (continuous)
         new_chat_id = chat_id or str(uuid.uuid4())
         timestamp = datetime.now().strftime("%I:%M %p")
         with chat_lock:
             if new_chat_id not in chat_sessions:
                 chat_sessions[new_chat_id] = {"messages": [], "title": user_input[:20] + "..."}
 
-            # Append user message
             chat_sessions[new_chat_id]["messages"].append({
                 "id": str(uuid.uuid4()),
                 "message": user_input,
@@ -188,7 +181,6 @@ def chat():
                 "file": {"name": filename} if file else None
             })
 
-            # Append assistant reply
             chat_sessions[new_chat_id]["messages"].append({
                 "id": str(uuid.uuid4()),
                 "message": None,
@@ -203,7 +195,8 @@ def chat():
         print(f"❌ Error: {e}")
         return jsonify({"reply": "⚠️ Error processing your message."}), 500
 
+# -------------------- Main --------------------
 if __name__ == "__main__":
     import os
-    port = int(os.environ.get("PORT", 5000))  # Use Render's port or 5000 locally
+    port = int(os.environ.get("PORT", 5000))  # Render assigns this
     app.run(host="0.0.0.0", port=port, debug=True, threaded=True)
