@@ -10,21 +10,33 @@ from pptx import Presentation
 from threading import Lock
 
 app = Flask(__name__)
-CORS(app)
 
-# Thread-safe in-memory storage
+# -------------------- CORS Setup --------------------
+# Allow only your Netlify frontend
+CORS(app, resources={r"/*": {"origins": "https://bgbot.netlify.app"}}, supports_credentials=True)
+
+# -------------------- Thread-safe storage --------------------
 chat_sessions = {}
 chat_lock = Lock()
 
-# Gemini API configuration
+# -------------------- Gemini API config --------------------
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyA3uC2IDU_Rb8VoJ-k2lGILQROc7j0SgNU")
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
 
-# Downloads folder
+# -------------------- Downloads folder --------------------
 os.makedirs('downloads', exist_ok=True)
 
+# -------------------- Preflight OPTIONS --------------------
+@app.before_request
+def handle_options():
+    if request.method == "OPTIONS":
+        response = app.make_response("")
+        response.headers["Access-Control-Allow-Origin"] = "https://bgbot.netlify.app"
+        response.headers["Access-Control-Allow-Methods"] = "GET,POST,PATCH,DELETE,OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
+        return response
+
 # -------------------- Chat Endpoints --------------------
-# Existing API route
 @app.route("/api/chats", methods=["GET"])
 def get_chats():
     with chat_lock:
@@ -32,7 +44,6 @@ def get_chats():
                     for k, v in chat_sessions.items()]
     return jsonify({"sessions": sessions})
 
-# Make /chats route behave the same as /api/chats
 @app.route("/chats", methods=["GET"])
 def get_chats_alias():
     return get_chats()
@@ -49,7 +60,6 @@ def get_chat(chat_id):
 def create_chat():
     data = request.get_json()
     user_input = data.get("message", "")
-    reply = data.get("reply", "")
     chat_id = data.get("chat_id", str(uuid.uuid4()))
     title = data.get("title")
     if not title:
@@ -86,7 +96,6 @@ def delete_all_chats():
         chat_sessions.clear()
     return jsonify({"message": "All chats deleted successfully"})
 
-# -------------------- Per-message deletion --------------------
 @app.route("/api/chats/<chat_id>/message/<msg_id>", methods=["DELETE"])
 def delete_message(chat_id, msg_id):
     with chat_lock:
@@ -96,7 +105,6 @@ def delete_message(chat_id, msg_id):
             return jsonify({"message": "Message deleted successfully"})
     return jsonify({"error": "Chat or message not found"}), 404
 
-# -------------------- Chat search/filter --------------------
 @app.route("/api/chats/search", methods=["GET"])
 def search_chats():
     query = request.args.get("q", "").lower()
@@ -177,7 +185,7 @@ def chat():
         result = response.json()
         reply = result.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
 
-        # Store chat messages (continuous)
+        # Store chat messages
         new_chat_id = chat_id or str(uuid.uuid4())
         timestamp = datetime.now().strftime("%I:%M %p")
         with chat_lock:
@@ -209,7 +217,7 @@ def chat():
         print(f"❌ Error: {e}")
         return jsonify({"reply": "⚠️ Error processing your message."}), 500
 
+# -------------------- Run App --------------------
 if __name__ == "__main__":
-    import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True, threaded=True)
