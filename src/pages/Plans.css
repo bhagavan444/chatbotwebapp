@@ -1,0 +1,261 @@
+/* Plans.css */
+
+/* ===== Main Layout ===== */
+.plans-main {
+  font-family: 'Inter', sans-serif;
+  padding: 2rem;
+  background: linear-gradient(180deg, #f5f7fa 0%, #e0e7ff 100%);
+  color: #1e293b;
+}
+
+/* ===== Hero Section ===== */
+.plans-hero {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.plans-hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a73e8;
+}
+
+.plans-hero .plans-highlight {
+  color: #0f4c81;
+}
+
+.plans-subtitle {
+  font-size: 1.1rem;
+  color: #4b5563;
+  margin-top: 0.5rem;
+}
+
+/* ===== Pricing Toggle ===== */
+.pricing-toggle {
+  display: inline-flex;
+  margin-top: 1rem;
+  background: #e0e7ff;
+  border-radius: 50px;
+  overflow: hidden;
+  border: 1px solid #c7d2fe;
+}
+
+.pricing-toggle span {
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.pricing-toggle span.active {
+  background-color: #1a73e8;
+  color: #fff;
+}
+
+/* ===== Plan Cards ===== */
+.plans-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.plan-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  width: 300px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.plan-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+
+/* ===== Badges ===== */
+.plan-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: #1a73e8;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 50px;
+  transition: transform 0.3s ease;
+}
+
+.plan-pro.plan-badge {
+  background: linear-gradient(135deg, #facc15, #f59e0b);
+  color: #1e293b;
+  font-weight: 700;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* ===== Plan Price ===== */
+.plan-price {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 1rem 0;
+}
+
+.plan-price span {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+/* ===== Features ===== */
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 1.5rem;
+  text-align: left;
+}
+
+.plan-features li {
+  padding: 0.5rem 0;
+  position: relative;
+  cursor: default;
+  transition: all 0.2s ease;
+}
+
+.plan-features li:hover {
+  color: #1a73e8;
+}
+
+.plan-features li::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.plan-features li.disabled-feature {
+  opacity: 0.5;
+}
+
+/* ===== Buttons ===== */
+.plan-btn {
+  width: 100%;
+  padding: 0.75rem 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.plan-btn.free {
+  background-color: #1a73e8;
+}
+
+.plan-btn.free:hover {
+  background-color: #1557b0;
+}
+
+.plan-btn.pro {
+  background-color: #facc15;
+  color: #1e293b;
+}
+
+.plan-btn.pro:hover:not(:disabled) {
+  background-color: #f59e0b;
+}
+
+.plan-btn.plus {
+  background-color: #0f172a;
+}
+
+.plan-btn.plus:hover:not(:disabled) {
+  background-color: #1e293b;
+}
+
+.plan-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ===== Comparison Table ===== */
+.plans-comparison {
+  margin-top: 3rem;
+  overflow-x: auto;
+}
+
+.comparison-title {
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #1a73e8;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  min-width: 600px;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+}
+
+.comparison-table th {
+  background-color: #f3f4f6;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.comparison-table td {
+  background-color: #fff;
+  color: #4b5563;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .plans-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .plans-main {
+    padding: 1rem;
+  }
+
+  .plans-hero h1 {
+    font-size: 2rem;
+  }
+
+  .plan-card {
+    width: 90%;
+    padding: 1.5rem 1rem;
+  }
+
+  .plan-price {
+    font-size: 1.5rem;
+  }
+
+  .comparison-table {
+    font-size: 0.85rem;
+  }
+}

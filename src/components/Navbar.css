@@ -1,0 +1,123 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  background: linear-gradient(to right, #2E3192, #1BFFFF);
+  color: #fff;
+  min-height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+  padding: 0 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Logo */
+.navbar-logo a {
+  color: black;
+  text-decoration: none;
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+/* Links container */
+.navbar-links {
+  display: flex;
+  align-items: center;
+}
+
+/* Nav links */
+.navbar-links a {
+  color:black;
+  text-decoration: none;
+  margin: 0 0.8rem;
+  font-size: 1.2rem;
+  letter-spacing: .03em;
+  transition: color 0.2s;
+}
+
+.navbar-links a:hover {
+  color: #19cf86;
+}
+
+.navbar-btn {
+  margin-left: 1.5rem;
+  background: #19cf86;
+  border: none;
+  color: #222e3c;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 22px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.navbar-btn:hover {
+  background: #fff;
+  color: #19cf86;
+  border: 1px solid #19cf86;
+}
+
+/* Hamburger menu styles */
+.navbar-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  width: 30px;
+  height: 28px;
+  margin-left: 10px;
+}
+
+.navbar-hamburger span {
+  display: block;
+  height: 4px;
+  width: 100%;
+  background: #fff;
+  margin: 4px 0;
+  border-radius: 2px;
+  transition: 0.3s;
+}
+.navbar-hamburger.open span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+.navbar-hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+.navbar-hamburger.open span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* Responsive for mobile/tablet */
+@media (max-width: 991px) {
+  .navbar-links {
+    position: fixed;
+    left: 0;
+    top: 64px;
+    right: 0;
+    background: #222e3c;
+    flex-direction: column;
+    align-items: flex-start;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s;
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.16);
+  }
+  .navbar-links.active {
+    max-height: 500px;
+    padding: 1.5rem 2rem;
+  }
+  .navbar-links a, .navbar-links .navbar-btn {
+    margin: 1rem 0;
+    font-size: 1.2rem;
+    width: 100%;
+  }
+  .navbar-hamburger {
+    display: flex;
+  }
+}

@@ -1,0 +1,262 @@
+/* Login.css */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+  position: relative;
+}
+
+.login-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+}
+
+.login-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a73e8;
+  margin-bottom: 0.5rem;
+}
+
+.login-subtitle {
+  color: #5f6368;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.mode-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #d2d7df;
+  border-radius: 5px;
+  background: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mode-btn.active {
+  background-color: #1a73e8;
+  color: white;
+  border-color: #1a73e8;
+}
+
+.mode-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.input-field {
+  padding: 0.75rem;
+  border: 1px solid #d2d7df;
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+  width: 100%;
+}
+
+.input-field:focus {
+  border-color: #1a73e8;
+}
+
+.password-field {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.primary-btn:disabled {
+  background-color: #9aa0a6;
+  cursor: not-allowed;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background-color: #1557b0;
+}
+
+.forgot-btn {
+  background: transparent;
+  border: none;
+  color: #1a73e8;
+  cursor: pointer;
+  margin-top: 5px;
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
+.divider {
+  color: #5f6368;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+  position: relative;
+  text-align: center;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background-color: #d2d7df;
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.google-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: white;
+  color: #5f6368;
+  border: 1px solid #d2d7df;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.google-btn:hover {
+  background-color: #f5f7fa;
+  border-color: #1a73e8;
+}
+
+.google-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #ffffff;
+  border-top: 3px solid #1557b0;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-msg {
+  color: #ff4d4f;
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.success-msg {
+  color: #4caf50;
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  backdrop-filter: blur(2px);
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 1.5rem;
+    margin: 0 10px;
+  }
+
+  .login-title {
+    font-size: 1.2rem;
+  }
+
+  .login-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .mode-btn {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .input-field {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .primary-btn,
+  .google-btn {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+}

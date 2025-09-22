@@ -1,0 +1,466 @@
+/* === Custom Properties for Reusability === */
+:root {
+  --primary-color: #3b82f6;
+  --primary-light: #60a5fa;
+  --secondary-color: #10b981;
+  --secondary-light: #34d399;
+
+  --text-light: #f1f5f9;
+  --text-muted: #4b5563;
+  --text-dark: #1e293b;
+  --background-light: #f0f4f8;
+  --background-dark: #1e293b;
+  --card-bg-light: #f8fafc;
+  --card-bg-dark: #374151;
+  --spacing-sm: 1rem;
+  --spacing-md: 2rem;
+  --spacing-lg: 4rem;
+  --border-radius: 12px;
+  --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* === Global Reset and Base Styles === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.homepage-main {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-dark);
+  background: var(--background-light);
+  line-height: 1.6;
+  overflow-x: hidden;
+  font-size: 16px;
+}
+
+/* === Hero Section === */
+.homepage-hero-section {
+  min-height: 80vh;
+  display: flex;
+  margin-top: 50px;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  color: var(--text-light);
+  padding: var(--spacing-lg) var(--spacing-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.homepage-hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  z-index: 1;
+  opacity: 0.5;
+}
+
+.homepage-hero-content {
+  max-width: 800px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  animation: fadeInUp 1s ease-out;
+}
+
+.homepage-hero-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.2;
+}
+
+.homepage-highlight {
+  background: linear-gradient(90deg, #facc15, #fef08a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.homepage-hero-subtitle {
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  margin-bottom: var(--spacing-md);
+  opacity: 0.9;
+}
+
+.homepage-hero-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.homepage-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
+  will-change: transform, box-shadow;
+}
+
+.homepage-btn:focus {
+  outline: 2px solid var(--text-light);
+  outline-offset: 2px;
+}
+
+.homepage-get-started {
+  background: linear-gradient(90deg, var(--secondary-color), var(--secondary-light));
+  color: var(--text-light);
+}
+
+.homepage-get-started:hover {
+  background: linear-gradient(90deg, #059669, #22c55e);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.homepage-plans {
+  background: transparent;
+  border: 2px solid var(--text-light);
+  color: var(--text-light);
+}
+
+.homepage-plans:hover {
+  background: var(--text-light);
+  color: var(--text-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* === Sections General === */
+.homepage-section-title {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-dark);
+  position: relative;
+}
+
+.homepage-section-title::after {
+  content: "";
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+  position: absolute;
+  bottom: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+/* === Features Section === */
+.homepage-features-section {
+  padding: var(--spacing-lg) var(--spacing-sm);
+  background: white;
+}
+
+.homepage-features-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-md);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.homepage-feature-card {
+  background: var(--card-bg-light);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.homepage-feature-card:hover,
+.homepage-feature-card:focus {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.homepage-feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.homepage-feature-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-dark);
+}
+
+.homepage-feature-description {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+/* === Use Cases Section === */
+.homepage-usecases-section {
+  padding: var(--spacing-lg) var(--spacing-sm);
+  background: linear-gradient(135deg, var(--background-light) 0%, #d9e2ec 100%);
+}
+
+.homepage-usecases-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-sm);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.homepage-usecase-card {
+  background: white;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius);
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.homepage-usecase-card:hover,
+.homepage-usecase-card:focus {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+}
+
+/* === How It Works Section === */
+.homepage-how-section {
+  padding: var(--spacing-lg) var(--spacing-sm);
+  background: white;
+}
+
+.homepage-how-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-sm);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.homepage-step {
+  background: var(--background-light);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius);
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.homepage-step:hover,
+.homepage-step:focus {
+  background: #e6f0fa;
+  transform: translateY(-5px);
+}
+
+/* === Testimonials Section === */
+.homepage-testimonials-section {
+  padding: var(--spacing-lg) var(--spacing-sm);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  color: var(--text-light);
+}
+
+.homepage-testimonials-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-md);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.homepage-testimonial {
+  background: rgba(255, 255, 255, 0.1);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  font-size: 1.1rem;
+  font-style: italic;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.homepage-testimonial:hover,
+.homepage-testimonial:focus {
+  transform: translateY(-5px);
+}
+
+/* === Pricing Section === */
+.homepage-pricing-section {
+  padding: var(--spacing-lg) var(--spacing-sm);
+  background: white;
+}
+
+.homepage-pricing-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-md);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.homepage-pricing-card {
+  background: var(--card-bg-light);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.homepage-pricing-card:hover,
+.homepage-pricing-card:focus {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+}
+
+.homepage-pricing-card h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-dark);
+}
+
+.homepage-pricing-card p {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+/* === FAQ Section === */
+.homepage-faq-section {
+  padding: var(--spacing-lg) var(--spacing-sm);
+  background: var(--background-light);
+}
+
+.homepage-faq-list {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.homepage-faq-item {
+  background: white;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-sm);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease;
+}
+
+.homepage-faq-item:hover,
+.homepage-faq-item:focus {
+  transform: translateY(-3px);
+}
+
+.homepage-faq-item strong {
+  font-size: 1.1rem;
+  color: var(--text-dark);
+}
+
+/* === CTA Section === */
+.homepage-cta-section {
+  padding: 3rem var(--spacing-sm);
+  background: linear-gradient(90deg, var(--secondary-color), var(--secondary-light));
+  text-align: center;
+  color: var(--text-light);
+}
+
+.homepage-cta-section h2 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+}
+
+/* === Footer === */
+.homepage-footer {
+  padding: var(--spacing-md);
+  background: var(--background-dark);
+  color: var(--text-light);
+  text-align: center;
+}
+
+.homepage-footer-links {
+  margin-top: 0.5rem;
+}
+
+.homepage-footer-links a {
+  color: #93c5fd;
+  text-decoration: none;
+  margin: 0 0.5rem;
+}
+
+.homepage-footer-links a:hover,
+.homepage-footer-links a:focus {
+  text-decoration: underline;
+}
+
+/* === Animations === */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === Responsive Design === */
+@media (max-width: 768px) {
+  .homepage-hero-title { font-size: clamp(1.5rem, 4vw, 2rem); }
+  .homepage-hero-subtitle { font-size: clamp(0.9rem, 3vw, 1rem); }
+  .homepage-section-title { font-size: clamp(1.8rem, 4vw, 2rem); }
+  .homepage-hero-buttons { flex-direction: column; gap: 0.75rem; }
+  .homepage-features-list,
+  .homepage-usecases-list,
+  .homepage-how-steps,
+  .homepage-pricing-list,
+  .homepage-testimonials-list { grid-template-columns: 1fr; }
+  .homepage-testimonial { font-size: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .homepage-hero-section { padding: var(--spacing-md) var(--spacing-sm); }
+  .homepage-btn { width: 100%; }
+}
+
+/* === Dark Mode Support === */
+@media (prefers-color-scheme: dark) {
+  .homepage-main { background: var(--background-dark); color: var(--text-light); }
+  .homepage-hero-section { background: linear-gradient(135deg, #1e40af 0%, var(--primary-color) 100%); }
+  .homepage-features-section,
+  .homepage-pricing-section,
+  .homepage-how-section { background: #2d3748; }
+  .homepage-feature-card,
+  .homepage-pricing-card,
+  .homepage-usecase-card,
+  .homepage-step,
+  .homepage-faq-item { background: var(--card-bg-dark); box-shadow: var(--shadow-md); color: var(--text-light); }
+  .homepage-feature-description,
+  .homepage-pricing-card p { color: #9ca3af; }
+  .homepage-section-title { color: var(--text-light); }
+  .homepage-section-title::after { background: linear-gradient(90deg, var(--primary-light), #93c5fd); }
+  .homepage-usecases-section { background: linear-gradient(135deg, #2d3748 0%, #4b5563 100%); }
+  .homepage-testimonials-section { background: linear-gradient(135deg, #1e40af 0%, var(--primary-color) 100%); }
+  .homepage-testimonial { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); }
+  .homepage-footer { background: #111827; }
+}
+
+/* === Accessibility Enhancements === */
+@media (prefers-reduced-motion: reduce) {
+  .homepage-feature-card,
+  .homepage-usecase-card,
+  .homepage-step,
+  .homepage-pricing-card,
+  .homepage-testimonial,
+  .homepage-faq-item,
+  .homepage-btn { transition: none; }
+  .homepage-hero-content { animation: none; }
+}

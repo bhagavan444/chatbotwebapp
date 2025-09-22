@@ -1,0 +1,277 @@
+/* About.css */
+
+/* General Layout */
+.abt-main {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #1f2937;
+  background: linear-gradient(to bottom, #f0f4f8, #ffffff);
+  padding: 2rem;
+}
+
+/* Hero Section */
+.abt-hero {
+  display: flex;
+  margin-top: 30px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.abt-hero-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  align-items: center;
+}
+
+.abt-avatar-card {
+  flex: 0 0 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #1a73e8;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.abt-avatar-card:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(26, 115, 232, 0.4);
+}
+
+.abt-avatar {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.abt-intro {
+  max-width: 600px;
+  text-align: center;
+}
+
+.abt-name {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a73e8;
+  margin-bottom: 0.5rem;
+}
+
+.abt-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
+  margin-top: 0.25rem;
+}
+
+.abt-location {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+
+.abt-quote {
+  font-style: italic;
+  color: #374151;
+  background: #e0f2fe;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid #1a73e8;
+  border-radius: 5px;
+  margin-top: 1rem;
+}
+
+.abt-quote span {
+  font-size: 0.95rem;
+}
+
+.abt-cta-btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: #1a73e8;
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.abt-cta-btn:hover {
+  background: #1557b0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(26, 115, 232, 0.3);
+}
+
+/* Card Layout */
+.abt-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.abt-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.abt-section-title {
+  font-size: 1.5rem;
+  color: #1a73e8;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.abt-description {
+  color: #4b5563;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+/* Values / Skills */
+.abt-values {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0 0;
+}
+
+.abt-values li {
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.abt-value-icon {
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+/* Skills Section */
+.abt-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.abt-skill {
+  background: #e0f2fe;
+  color: #1a73e8;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.abt-skill:hover {
+  background: #bae6fd;
+  transform: translateY(-2px);
+}
+
+/* Timeline */
+.abt-timeline {
+  list-style: none;
+  padding-left: 0;
+  margin: 1rem 0 0 0;
+  position: relative;
+}
+
+.abt-timeline::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #1a73e8;
+}
+
+.abt-timeline li {
+  position: relative;
+  padding-left: 50px;
+  margin-bottom: 1.5rem;
+  color: #4b5563;
+}
+
+.abt-timeline li::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 4px;
+  width: 16px;
+  height: 16px;
+  background: #1a73e8;
+  border-radius: 50%;
+}
+
+/* Profile / Contact */
+.abt-profile div {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.abt-contact-links {
+  margin-top: 0.75rem;
+}
+
+.abt-contact-links a {
+  margin-right: 1rem;
+  text-decoration: none;
+  color: #1a73e8;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.abt-contact-links a:hover {
+  color: #1557b0;
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .abt-hero-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .abt-avatar-card {
+    margin-bottom: 1rem;
+  }
+
+  .abt-intro {
+    max-width: 100%;
+  }
+
+  .abt-timeline li {
+    padding-left: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .abt-section-title {
+    font-size: 1.25rem;
+  }
+
+  .abt-name {
+    font-size: 1.5rem;
+  }
+
+  .abt-title {
+    font-size: 0.9rem;
+  }
+
+  .abt-skill {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .abt-timeline li {
+    padding-left: 35px;
+  }
+}
