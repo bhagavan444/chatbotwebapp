@@ -30,7 +30,7 @@ import EmojiPicker from "emoji-picker-react";
 import html2pdf from "html2pdf.js";
 import "./Chat.css";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://bgbot-er2w.onrender.com";
 
 function parseInlineFormatting(text = "") {
   let s = text
