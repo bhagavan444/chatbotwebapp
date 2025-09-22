@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-import os
-import uuid
+import os, uuid
 from datetime import datetime
 import requests
 from PyPDF2 import PdfReader
@@ -12,7 +11,7 @@ from threading import Lock
 app = Flask(__name__)
 
 # -------------------- CORS Setup --------------------
-CORS(app, resources={r"/*": {"origins": "https://bgbot.netlify.app"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 # -------------------- Thread-safe storage --------------------
 chat_sessions = {}
@@ -23,29 +22,26 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyA3uC2IDU_Rb8VoJ-k2lGILQROc7j
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
 
 # -------------------- Downloads folder --------------------
-os.makedirs('downloads', exist_ok=True)
+os.makedirs("downloads", exist_ok=True)
 
 # -------------------- Preflight OPTIONS --------------------
 @app.before_request
 def handle_options():
     if request.method == "OPTIONS":
         response = app.make_response("")
-        response.headers["Access-Control-Allow-Origin"] = "https://bgbot.netlify.app"
+        response.headers["Access-Control-Allow-Origin"] = "*"
         response.headers["Access-Control-Allow-Methods"] = "GET,POST,PATCH,DELETE,OPTIONS"
         response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
         return response
 
-# -------------------- Chat Endpoints --------------------
+# -------------------- Chat sessions --------------------
 @app.route("/api/chats", methods=["GET"])
+@app.route("/chats", methods=["GET"])
 def get_chats():
     with chat_lock:
         sessions = [{"_id": k, "messages": v["messages"], "title": v.get("title", "Untitled Chat")}
                     for k, v in chat_sessions.items()]
     return jsonify({"sessions": sessions})
-
-@app.route("/chats", methods=["GET"])
-def get_chats_alias():
-    return get_chats()
 
 @app.route("/api/chats/<chat_id>", methods=["GET"])
 def get_chat(chat_id):
@@ -57,21 +53,18 @@ def get_chat(chat_id):
 
 @app.route("/api/chats", methods=["POST"])
 def create_chat():
-    data = request.get_json()
-    user_input = data.get("message", "")
+    data = request.get_json() or {}
+    user_input = data.get("message", "New chat")
     chat_id = data.get("chat_id", str(uuid.uuid4()))
-    title = data.get("title")
-    if not title:
-        first_line = user_input.strip().split("\n")[0]
-        title = first_line[:30] + "..." if len(first_line) > 30 else first_line or f"Chat {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+    title = data.get("title") or (user_input.strip().split("\n")[0][:30] + "..." if user_input else f"Chat {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     with chat_lock:
         if chat_id not in chat_sessions:
             chat_sessions[chat_id] = {"messages": [], "title": title}
     return jsonify({"chat_id": chat_id})
 
 @app.route("/api/chats/<chat_id>", methods=["PATCH"])
-def update_chat(chat_id):
-    data = request.get_json()
+def rename_chat(chat_id):
+    data = request.get_json() or {}
     new_title = data.get("title")
     if not new_title:
         return jsonify({"error": "Title is required"}), 400
@@ -118,41 +111,44 @@ def search_chats():
 # -------------------- File Download --------------------
 @app.route("/download/<filename>", methods=["GET"])
 def download(filename):
-    safe_path = os.path.join("downloads", filename)
-    if os.path.exists(safe_path):
-        return send_from_directory('downloads', filename, as_attachment=True)
+    filepath = os.path.join("downloads", filename)
+    if os.path.exists(filepath):
+        return send_from_directory("downloads", filename, as_attachment=True)
     return jsonify({"error": "File not found"}), 404
 
 # -------------------- Chat + File Upload & ATS --------------------
 @app.route("/api/chat", methods=["POST"])
+@app.route("/chat", methods=["POST"])
 def chat():
     try:
-        user_input, file, chat_id = "", None, None
+        user_input, files, chat_id = "", [], None
         if request.content_type.startswith("multipart/form-data"):
             user_input = request.form.get("message", "")
             chat_id = request.form.get("chat_id")
-            file = request.files.get("file")
+            files = request.files.getlist("files")
         else:
-            data = request.get_json()
+            data = request.get_json() or {}
             user_input = data.get("message", "")
             chat_id = data.get("chat_id")
 
-        if not user_input and not file:
+        if not user_input and not files:
             return jsonify({"reply": "⚠️ No input or file received."}), 400
 
-        # Process file
-        filename, ext, file_text = None, None, ""
-        if file:
+        # Process files
+        file_text = ""
+        uploaded_files = []
+        for file in files:
             filename = f"{uuid.uuid4().hex}_{file.filename}"
             filepath = os.path.join("downloads", filename)
             file.save(filepath)
+            uploaded_files.append(filename)
             ext = os.path.splitext(filename)[1].lower()
             if ext == ".pdf":
                 reader = PdfReader(filepath)
-                file_text = "\n".join(page.extract_text() or "" for page in reader.pages)
+                file_text += "\n".join(page.extract_text() or "" for page in reader.pages)
             elif ext == ".docx":
                 doc = Document(filepath)
-                file_text = "\n".join([p.text for p in doc.paragraphs])
+                file_text += "\n".join(p.text for p in doc.paragraphs)
             elif ext == ".pptx":
                 prs = Presentation(filepath)
                 for slide in prs.slides:
@@ -160,20 +156,21 @@ def chat():
                         if hasattr(shape, "text"):
                             file_text += shape.text + "\n"
             elif ext in [".jpg", ".jpeg", ".png"]:
-                file_text = "[Image uploaded, text analysis not available]"
+                file_text += f"[Image uploaded: {filename}]"
             else:
                 return jsonify({"reply": "⚠️ Unsupported file type."}), 400
-            user_input += f"\n\nFile Content ({filename}): {file_text}"
+        if file_text:
+            user_input += "\n\n" + file_text
 
-        # Auto-detect resume
+        # Detect resume
         resume_keywords = ["experience", "education", "skills", "projects", "certifications", "objective", "summary"]
         is_resume = any(word.lower() in user_input.lower() for word in resume_keywords)
 
-        # Gemini prompt
+        # Gemini API prompt
         system_prompt = (
-            "You are an expert ATS analyzer.\nAnalyze this resume content and provide an ATS score (0-100) with detailed improvement suggestions in plain text."
+            "You are an expert ATS analyzer.\nProvide an ATS score (0-100) and feedback."
             if is_resume else
-            "You are a helpful assistant.\nSummarize the content or answer user's query in plain text."
+            "You are a helpful assistant.\nAnswer the user's query in plain text."
         )
         prompt_text = system_prompt + "\n\n" + user_input
 
@@ -184,24 +181,24 @@ def chat():
         result = response.json()
         reply = result.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
 
-        # Store chat messages
+        # Store messages
         new_chat_id = chat_id or str(uuid.uuid4())
         timestamp = datetime.now().strftime("%I:%M %p")
         with chat_lock:
             if new_chat_id not in chat_sessions:
-                chat_sessions[new_chat_id] = {"messages": [], "title": user_input[:20] + "..."}
+                chat_sessions[new_chat_id] = {"messages": [], "title": user_input[:20]+"..."}
 
-            # Append user message
+            # User message
             chat_sessions[new_chat_id]["messages"].append({
                 "id": str(uuid.uuid4()),
                 "message": user_input,
                 "reply": None,
                 "time": timestamp,
                 "role": "user",
-                "file": {"name": filename} if file else None
+                "files": uploaded_files if uploaded_files else None
             })
 
-            # Append assistant reply
+            # Assistant reply
             chat_sessions[new_chat_id]["messages"].append({
                 "id": str(uuid.uuid4()),
                 "message": None,
@@ -215,11 +212,6 @@ def chat():
     except Exception as e:
         print(f"❌ Error: {e}")
         return jsonify({"reply": "⚠️ Error processing your message."}), 500
-
-# -------------------- /chat alias for frontend --------------------
-@app.route("/chat", methods=["POST"])
-def chat_alias():
-    return chat()
 
 # -------------------- Run App --------------------
 if __name__ == "__main__":
