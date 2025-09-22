@@ -9,21 +9,22 @@ from docx import Document
 from pptx import Presentation
 from threading import Lock
 
+# -------------------- Flask App Setup --------------------
 app = Flask(__name__)
 
-# -------------------- CORS --------------------
-# Allow only your deployed frontend domain
-CORS(app, resources={r"/api/*": {"origins": "https://bgbot.netlify.app"}})
+# Allow CORS for frontend domain
+CORS(app, origins=["https://bgbot.netlify.app"])  # Replace with your frontend domain
+# For testing, you can use: CORS(app)
 
-# -------------------- Thread-safe in-memory storage --------------------
+# Thread-safe in-memory storage
 chat_sessions = {}
 chat_lock = Lock()
 
-# -------------------- Gemini API configuration --------------------
+# Gemini API configuration
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyA3uC2IDU_Rb8VoJ-k2lGILQROc7j0SgNU")
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
 
-# -------------------- Downloads folder --------------------
+# Downloads folder
 os.makedirs('downloads', exist_ok=True)
 
 # -------------------- Chat Endpoints --------------------
@@ -109,6 +110,7 @@ def download(filename):
         return send_from_directory('downloads', filename, as_attachment=True)
     return jsonify({"error": "File not found"}), 404
 
+# -------------------- Chat + File Upload & Gemini Integration --------------------
 @app.route("/api/chat", methods=["POST"])
 def chat():
     try:
@@ -125,6 +127,7 @@ def chat():
         if not user_input and not file:
             return jsonify({"reply": "⚠️ No input or file received."}), 400
 
+        # Process uploaded file
         filename, ext, file_text = None, None, ""
         if file:
             filename = f"{uuid.uuid4().hex}_{file.filename}"
@@ -149,9 +152,11 @@ def chat():
                 return jsonify({"reply": "⚠️ Unsupported file type."}), 400
             user_input += f"\n\nFile Content ({filename}): {file_text}"
 
+        # Resume detection
         resume_keywords = ["experience", "education", "skills", "projects", "certifications", "objective", "summary"]
         is_resume = any(word.lower() in user_input.lower() for word in resume_keywords)
 
+        # Gemini prompt
         system_prompt = (
             "You are an expert ATS analyzer.\nAnalyze this resume content and provide an ATS score (0-100) with detailed improvement suggestions in plain text."
             if is_resume else
@@ -166,6 +171,7 @@ def chat():
         result = response.json()
         reply = result.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
 
+        # Store chat messages
         new_chat_id = chat_id or str(uuid.uuid4())
         timestamp = datetime.now().strftime("%I:%M %p")
         with chat_lock:
@@ -195,8 +201,7 @@ def chat():
         print(f"❌ Error: {e}")
         return jsonify({"reply": "⚠️ Error processing your message."}), 500
 
-# -------------------- Main --------------------
+# -------------------- Run App --------------------
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 5000))  # Render assigns this
+    port = int(os.environ.get("PORT", 5000))  # Render sets the PORT env variable
     app.run(host="0.0.0.0", port=port, debug=True, threaded=True)
